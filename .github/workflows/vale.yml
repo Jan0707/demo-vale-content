@@ -43,4 +43,4 @@ jobs:
 
       # For verification
       - name: Show files changed
-        run: cat $HOME/files.json
+        run: cat $HOME/files.csv
