@@ -20,7 +20,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  check-links:
+  determine-and-lint-diff:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -37,7 +37,7 @@ jobs:
 
       # Creates file "$/files.json", among others
       - name: Gather files changed
-        uses: trilom/file-changes-action@1.24
+        uses: trilom/file-changes-action@1.2.4
         with:
           fileOutput: ','
 
