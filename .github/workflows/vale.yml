@@ -43,7 +43,9 @@ jobs:
 
       # For verification
       - name: Show files changed
-        run: cat $HOME/files.txt
+        run: >
+          cat $HOME/files.txt
+          && cp $HOME/files.txt .
 
       # Download and run vale
       - name: Run vale
@@ -51,4 +53,4 @@ jobs:
 
       # Download and run vale
       - name: Show vale output
-        run: cat $HOME/tmp_vale_result.json
+        run: cat tmp_vale_result.json
