@@ -1,0 +1,46 @@
+# This is based on: https://docs.github.com/en/actions/examples/using-scripts-to-test-your-code-on-a-runner
+
+name: 'Vale Linter'
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+  pull_request:
+
+permissions:
+  contents: read
+  # Needed for the 'trilom/file-changes-action' action
+  pull-requests: read
+
+# This allows a subsequently queued workflow run to interrupt previous runs
+concurrency:
+  group: '${{ github.workflow }} @ ${{ github.event.pull_request.head.label || github.head_ref || github.ref }}'
+  cancel-in-progress: true
+
+jobs:
+  check-links:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+#      - name: Setup node
+#        uses: actions/setup-node@v3
+#        with:
+#          node-version: "lts/*"
+#          cache: npm
+
+#      - name: Install
+#        run: npm ci
+
+      # Creates file "$/files.json", among others
+      - name: Gather files changed
+        uses: trilom/file-changes-action@1.24
+        with:
+          fileOutput: ','
+
+      # For verification
+      - name: Show files changed
+        run: cat $HOME/files.json
