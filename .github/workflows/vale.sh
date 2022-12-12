@@ -14,8 +14,8 @@ if [ "$(uname)" == "Darwin" ]; then
     valeBinary="vale"
 elif [ "$(expr substr $(uname -s) 1 5)" == "Linux" ]; then
     wget https://github.com/errata-ai/vale/releases/download/v2.15.4/vale_2.15.4_Linux_64-bit.tar.gz
-    tar -xvzf vale_2.15.4_Linux_64-bit.tar.gz -C "${SCRIPTPATH}/bin"
-    valeBinary="${SCRIPTPATH}/bin/vale"
+    tar -xvzf vale_2.15.4_Linux_64-bit.tar.gz -C "${SCRIPTPATH}"
+    valeBinary="${SCRIPTPATH}/vale"
 elif [ "$(expr substr $(uname -s) 1 10)" == "MINGW32_NT" ]; then
     echo "Win32 is not supported"
     exit 1
