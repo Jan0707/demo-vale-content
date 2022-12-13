@@ -1,1 +1,10 @@
-tmp_*
+# IDEs
+/.idea
+
+# Working files
+## List of files that are part of this diff to be reviewed by vale
+/files.txt
+## Vale output in json
+/tmp_*
+## Vale output transformed to RDF for reviewdog
+/rdf_*

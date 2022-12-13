@@ -50,13 +50,59 @@ const fs = require('fs');
 // Remove 'node' and filepath from the list then get the first actual arg
 const filepath = process.argv.slice(2)[0];
 
-let rawdata = fs.readFileSync(filepath);
-let inputData = JSON.parse(rawdata);
-console.log(inputData);
+const rawData = fs.readFileSync(filepath);
+const inputData = JSON.parse(rawData);
 
-// TODO: Read JSON into intermediary value object
-// TODO: Map intermediary value object to RDF
+const output = {
+     source: {
+       name: 'Vale',
+       url: 'https://vale.sh/docs/'
+     },
+     severity: null,
+     diagnostics: []
+};
 
-// TODO: Write out RDF to json
-// let data = JSON.stringify(student);
-//fs.writeFileSync('student-2.json', data);
+for (let filename in inputData) {
+    const valeFileResults = inputData[filename];
+
+    const diagnostics = valeFileResults.map((valeFileResult) => {
+        const diagnostic = {
+            message: valeFileResult.Message,
+            location: {
+                path: filename,
+                range: {
+                    start: {
+                        line: valeFileResult.Line,
+                        column: valeFileResult.Span[0]
+                    }
+                }
+            },
+            severity: valeFileResult.Severity.toUpperCase(),
+            code: {
+                value: valeFileResult.Check,
+                url: valeFileResult.Link
+            }
+        };
+
+        return diagnostic
+    });
+
+    output.diagnostics = Array.prototype.concat(output.diagnostics, diagnostics);
+}
+
+// Set final RDF severity to highest severity that was found in all results
+const allSeverities = output.diagnostics.map((diagnostic) => diagnostic.severity);
+if (allSeverities.indexOf('ERROR') >= 0) {
+    output.severity = 'ERROR'
+} else if (allSeverities.indexOf('WARNING') >= 0) {
+    output.severity = 'WARNING'
+} else if (allSeverities.indexOf('NOTICE') >= 0) {
+    output.severity = 'NOTICE'
+} else if (allSeverities.indexOf('INFO') >= 0) {
+    output.severity = 'INFO'
+}
+
+console.log(JSON.stringify(output));
+
+let outputData = JSON.stringify(output);
+fs.writeFileSync('rdf_' + filepath, outputData);
