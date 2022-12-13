@@ -52,6 +52,7 @@ jobs:
         with:
           node-version: "lts/*"
           cache: npm
+          cache-dependency-path: .github/workflows/package-lock.json
 
       # Generate RDJSON from vale output and verify
       - name: Generating RDF file
