@@ -40,7 +40,7 @@ jobs:
 
       # Download and run vale
       - name: Run vale
-        run: ./.github/workflows/vale.sh
+        run: ./.github/workflows/vale/vale
 
       # For verification
       - name: Show vale output
@@ -52,12 +52,12 @@ jobs:
         with:
           node-version: "lts/*"
           cache: npm
-          cache-dependency-path: .github/workflows/package-lock.json
+          cache-dependency-path: .github/workflows/vale/parser/package-lock.json
 
       # Generate RDJSON from vale output and verify
       - name: Generating RDF file
         run: >
-          node .github/workflows/vale-reader.js tmp_vale_result.json
+          node .github/workflows/vale/parser/vale-parser.js tmp_vale_result.json
           && cat rdf_tmp_vale_result.json
 
       # Load reviewdog
