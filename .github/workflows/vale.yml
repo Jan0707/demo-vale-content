@@ -40,7 +40,7 @@ jobs:
 
       # Download and run vale
       - name: Run vale
-        run: ./.github/workflows/vale/vale
+        run: ./.github/workflows/vale/vale_wrapper
 
       # For verification
       - name: Show vale output

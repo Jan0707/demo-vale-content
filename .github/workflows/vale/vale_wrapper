@@ -27,4 +27,4 @@ fi
 #
 # Run vale for `good` folder and store output
 #
-${valeBinary} --config "${SCRIPTPATH}/.vale.ini" --output=JSON $( cat "${SCRIPTPATH}/../../files.txt" ) > "${SCRIPTPATH}/../../tmp_vale_result.json"
+${valeBinary} --config "${SCRIPTPATH}/.vale.ini" --output=JSON $( cat "${SCRIPTPATH}/../../../files.txt" ) > "${SCRIPTPATH}/../../../tmp_vale_result.json"
