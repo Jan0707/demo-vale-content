@@ -1,0 +1,11 @@
+{
+  "name": "workflows",
+  "version": "0.1.0",
+  "description": "A simple script to transform vale output to RDF",
+  "main": "vale-parser.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Jan Gregor Emge-Triebel",
+  "license": "ISC"
+}

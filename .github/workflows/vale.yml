@@ -1,0 +1,67 @@
+# This is based on: https://docs.github.com/en/actions/examples/using-scripts-to-test-your-code-on-a-runner
+
+name: 'Vale Linter'
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+  pull_request:
+
+permissions:
+  contents: read
+  # Needed for the 'trilom/file-changes-action' action  to built diff and reviewdog to write back changes
+  pull-requests: write
+
+# This allows a subsequently queued workflow run to interrupt previous runs
+concurrency:
+  group: '${{ github.workflow }} @ ${{ github.event.pull_request.head.label || github.head_ref || github.ref }}'
+  cancel-in-progress: true
+
+jobs:
+  determine-and-lint-diff:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      # Creates file "$/files.json", among others
+      - name: Gather files changed
+        uses: trilom/file-changes-action@1.2.4
+        with:
+          fileOutput: ''
+
+      # For verification
+      - name: Show files changed
+        run: >
+          cat $HOME/files.txt
+          && cp $HOME/files.txt .
+
+      # Download and run vale
+      - name: Run vale
+        run: ./.github/workflows/vale/vale_wrapper
+
+      # For verification
+      - name: Show vale output
+        run: cat tmp_vale_result.json
+
+      # Install node
+      - name: Setup node
+        uses: actions/setup-node@v3
+        with:
+          node-version: "lts/*"
+          cache: npm
+          cache-dependency-path: .github/workflows/vale/parser/package-lock.json
+
+      # Generate RDJSON from vale output and verify
+      - name: Generating RDF file
+        run: >
+          node .github/workflows/vale/parser/vale-parser.js tmp_vale_result.json
+          && cat rdf_tmp_vale_result.json
+
+      # Load reviewdog
+      - uses: reviewdog/action-setup@v1
+      - run:  cat rdf_tmp_vale_result.json | reviewdog -f=rdjson -reporter=github-pr-review
+        env:
+          REVIEWDOG_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
